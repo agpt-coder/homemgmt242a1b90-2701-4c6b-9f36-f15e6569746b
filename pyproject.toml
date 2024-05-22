@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "homemgmt"
+version = "0.1.0"
+description = "use `pip install HomeAssistant-API` to expose the api endpoints to list the services, the entities, and rooms"
+authors = ["AutoGPT <info@agpt.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+homeassistant-api = "*"
+bcrypt = "^3.2.0"
+fastapi = "*"
+httpx = "*"
+prisma = "*"
+pydantic = "*"
+uvicorn = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

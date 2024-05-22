@@ -1,0 +1,61 @@
+// datasource db defines the database connection settings.
+// It is configured for PostgreSQL and uses an environment variable for the connection URL.
+// The 'extensions' feature enables the use of PostgreSQL-specific data types.
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+// generator db configures Prisma Client settings.
+// It is set up to use Prisma Client Python with asyncio interface and specific features.
+generator db {
+  provider                    = "prisma-client-py"
+  interface                   = "asyncio"
+  recursive_type_depth        = 5
+  previewFeatures             = ["postgresqlExtensions"]
+  enable_experimental_decimal = true
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  role     Role      @default(USER)
+  sessions Session[]
+  rooms    Room[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  createdAt DateTime @default(now())
+  valid     Boolean  @default(true)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Room {
+  id       Int      @id @default(autoincrement())
+  name     String
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
+  entities Entity[]
+}
+
+model Entity {
+  id         Int    @id @default(autoincrement())
+  name       String
+  entityType String
+  roomId     Int
+  room       Room   @relation(fields: [roomId], references: [id])
+}
+
+model Service {
+  id              Int    @id @default(autoincrement())
+  serviceName     String
+  installationCmd String @default("pip install HomeAssistant-API")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
